@@ -29,7 +29,10 @@ export default function Home() {
       if (location) params.append("location", location);
       if (experience) params.append("experience", experience);
 
-      const res = await fetch(`http://localhost:8000/api/jobs?${params.toString()}`);
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL !== undefined 
+        ? process.env.NEXT_PUBLIC_API_BASE_URL 
+        : (process.env.NODE_ENV === "production" ? "" : "http://localhost:8000");
+      const res = await fetch(`${API_BASE}/api/jobs?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       setJobs(data);
