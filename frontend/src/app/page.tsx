@@ -27,7 +27,7 @@ interface Job {
   description: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+import { API_BASE } from "./lib/api";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);

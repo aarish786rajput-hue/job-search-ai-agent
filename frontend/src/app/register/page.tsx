@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, ArrowRight, Lock, Mail, User, Sparkles, CheckCircle, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "../components/ThemeToggle";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+import { API_BASE } from "../lib/api";
 
 export default function Register() {
   const [fullName, setFullName] = useState("");

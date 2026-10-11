@@ -8,8 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "../components/ThemeToggle";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+import { API_BASE } from "../lib/api";
 
 interface UserProfile {
   id: number;

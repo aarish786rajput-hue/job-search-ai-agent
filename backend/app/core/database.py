@@ -2,7 +2,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
+import os
+
+if os.environ.get("VERCEL"):
+    SQLALCHEMY_DATABASE_URL = "sqlite:////tmp/sql_app.db"
+else:
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
 # If using Postgres later: SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
 
 engine = create_engine(

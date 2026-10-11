@@ -15,10 +15,10 @@ app = FastAPI(
     description="AI-powered career assistant backend (Track B - Capabl Project)"
 )
 
-# Configure CORS — allow frontend dev server
+# Configure CORS — allow frontend dev server and Vercel domains
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origin_regex=r".*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
