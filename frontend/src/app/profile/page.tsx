@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
-  User, Mail, Shield, Briefcase, Sparkles,
-  LogOut, ArrowLeft, Loader2, AlertCircle, CheckCircle
+  User, Mail, Shield, Sparkles,
+  LogOut, ArrowLeft, Loader2, AlertCircle, CheckCircle,
+  Bookmark, Trash2
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "../components/ThemeToggle";
@@ -17,8 +18,20 @@ interface UserProfile {
   is_active: boolean;
 }
 
+interface TrackedApplication {
+  id: number;
+  job_id: number;
+  job_title: string;
+  company: string;
+  location: string;
+  salary: string;
+  status: string;
+  created_at: string;
+}
+
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [applications, setApplications] = useState<TrackedApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -30,21 +43,31 @@ export default function ProfilePage() {
       return;
     }
 
-    const fetchProfile = async () => {
+    const fetchProfileAndApps = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const [profRes, appRes] = await Promise.all([
+          fetch(`${API_BASE}/api/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch(`${API_BASE}/api/applications`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+        ]);
 
-        if (res.status === 401) {
+        if (profRes.status === 401) {
           localStorage.removeItem("token");
           router.push("/login");
           return;
         }
 
-        if (!res.ok) throw new Error("Failed to load profile.");
-        const data = await res.json();
-        setProfile(data);
+        if (!profRes.ok) throw new Error("Failed to load profile.");
+        const profData = await profRes.json();
+        setProfile(profData);
+
+        if (appRes.ok) {
+          const appsData = await appRes.json();
+          setApplications(appsData);
+        }
       } catch {
         setError("Could not load profile. Please try again.");
       } finally {
@@ -52,8 +75,50 @@ export default function ProfilePage() {
       }
     };
 
-    fetchProfile();
+    fetchProfileAndApps();
   }, [router]);
+
+  const handleUpdateStatus = async (appId: number, newStatus: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/applications/${appId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (res.ok) {
+        setApplications((prev) =>
+          prev.map((a) => (a.id === appId ? { ...a, status: newStatus } : a))
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDeleteApp = async (appId: number) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/applications/${appId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.ok) {
+        setApplications((prev) => prev.filter((a) => a.id !== appId));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -66,7 +131,7 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center transition-colors duration-200">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
-          <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">Loading your profile...</p>
+          <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">Loading your profile & application tracker...</p>
         </div>
       </div>
     );
@@ -123,8 +188,8 @@ export default function ProfilePage() {
           >
             <ArrowLeft className="w-4 h-4" /> Back to Jobs
           </Link>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">My Profile</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">Manage your career assistant account</p>
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">My Profile & Career Hub</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">Manage your profile, ATS application status, and career goals</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -152,7 +217,6 @@ export default function ProfilePage() {
 
           {/* Details Card */}
           <div className="md:col-span-2 space-y-4">
-
             {/* Account Details */}
             <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 text-base">
@@ -181,39 +245,87 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Quick Links */}
-            <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-              <h3 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 text-base">
-                <Briefcase className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
-                Quick Actions
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Link
-                  href="/"
-                  className="flex items-center gap-3 p-4 bg-indigo-50/70 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800/60 rounded-2xl transition-all group"
+        {/* Week 3 Feature 3: Application Tracking System (ATS Table) */}
+        <div className="mt-10 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Bookmark className="w-5 h-5 text-indigo-500" />
+                Application Tracking System (ATS Tracker)
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Track your active job applications, interview stages, and saved opportunities
+              </p>
+            </div>
+            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-800">
+              {applications.length} Tracked
+            </span>
+          </div>
+
+          {applications.length === 0 ? (
+            <div className="text-center py-12 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+              <Bookmark className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+              <p className="font-semibold text-sm text-slate-700 dark:text-slate-300">No tracked applications yet</p>
+              <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                Go to the jobs page and click &quot;Apply &amp; Track&quot; or bookmark any opening to manage your pipeline here.
+              </p>
+              <Link
+                href="/"
+                className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                Browse &amp; Track Jobs →
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {applications.map((app) => (
+                <div
+                  key={app.id}
+                  className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all"
                 >
-                  <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
-                    <Briefcase className="w-4 h-4 text-white" />
-                  </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Browse Jobs</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Find your next role</p>
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white">{app.job_title}</h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      {app.company} • {app.location} • <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{app.salary}</span>
+                    </p>
                   </div>
-                </Link>
 
-                <div className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-2xl opacity-60 cursor-not-allowed">
-                  <div className="w-9 h-9 bg-slate-300 dark:bg-slate-700 rounded-xl flex items-center justify-center">
-                    <User className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100">AI Resume Builder</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Coming in Week 3</p>
+                  <div className="flex items-center gap-3">
+                    <select
+                      value={app.status}
+                      onChange={(e) => handleUpdateStatus(app.id, e.target.value)}
+                      className={`text-xs font-bold px-3 py-1.5 rounded-xl border outline-none cursor-pointer ${
+                        app.status === "Offer"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-800"
+                          : app.status === "Interviewing"
+                          ? "bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-950/60 dark:text-amber-400 dark:border-amber-800"
+                          : app.status === "Applied"
+                          ? "bg-indigo-50 text-indigo-700 border-indigo-300 dark:bg-indigo-950/60 dark:text-indigo-400 dark:border-indigo-800"
+                          : "bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+                      }`}
+                    >
+                      <option value="Saved">Saved</option>
+                      <option value="Applied">Applied</option>
+                      <option value="Interviewing">Interviewing</option>
+                      <option value="Offer">Offer Received</option>
+                      <option value="Rejected">Archived</option>
+                    </select>
+
+                    <button
+                      onClick={() => handleDeleteApp(app.id)}
+                      className="text-slate-400 hover:text-red-500 p-1.5 rounded-lg transition-colors cursor-pointer"
+                      title="Remove from tracker"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>

@@ -26,16 +26,22 @@ jobs:
       - name: Install backend dependencies
         run: |
           cd backend
-          pip install fastapi uvicorn sqlalchemy passlib PyJWT python-multipart
+          pip install -r requirements.txt
 
       - name: Check Python syntax
         run: |
           cd backend
           python -m py_compile main.py
           python -m py_compile app/api/auth.py
+          python -m py_compile app/api/resume.py
+          python -m py_compile app/api/applications.py
+          python -m py_compile app/api/agent.py
+          python -m py_compile app/services/resume_parser.py
+          python -m py_compile app/agent/career_agent.py
           python -m py_compile app/core/database.py
           python -m py_compile app/models/user.py
-          echo "✅ All backend files passed syntax check!"
+          python -m py_compile app/models/application.py
+          echo "✅ All Week 3 backend files passed syntax check!"
 
   # ──────────────────────────────────────────────
   # 2. Frontend (Next.js) Build Check

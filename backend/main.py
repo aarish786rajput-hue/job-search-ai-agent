@@ -4,7 +4,9 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 from app.core.database import engine, Base
-from app.api import auth
+from app.models.user import User
+from app.models.application import JobApplication
+from app.api import auth, resume, applications, agent
 
 # Create all database tables on startup
 Base.metadata.create_all(bind=engine)
@@ -26,6 +28,9 @@ app.add_middleware(
 
 # Mount routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(resume.router, prefix="/api/resume", tags=["Resume & ATS"])
+app.include_router(applications.router, prefix="/api/applications", tags=["Applications ATS"])
+app.include_router(agent.router, prefix="/api/agent", tags=["LangGraph Agent"])
 
 
 # ─── Models ───────────────────────────────────────────────────────────────────

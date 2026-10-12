@@ -7,3 +7,7 @@ python-multipart
 pydantic
 python-dotenv
 requests
+pypdf
+langgraph
+langchain
+langchain-core
