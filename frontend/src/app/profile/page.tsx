@@ -6,7 +6,7 @@ import {
   User, Mail, Shield, Sparkles,
   LogOut, ArrowLeft, Loader2, AlertCircle, CheckCircle,
   Bookmark, Trash2, Bell, Briefcase, MapPin, DollarSign,
-  Clock, Plus, Send, ToggleLeft, ToggleRight, Radio, Save
+  Clock, Plus, Send, ToggleLeft, ToggleRight, Radio, Save, Bot
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "../components/ThemeToggle";
@@ -376,14 +376,20 @@ export default function ProfilePage() {
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
           <Sparkles className="w-5 h-5" /> Capabl.
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <Link
+            href="/interview"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/60 hover:bg-indigo-100 transition-colors"
+          >
+            <Bot className="w-3.5 h-3.5" /> Mock Interview AI
+          </Link>
           <NotificationBell />
           <ThemeToggle />
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 border border-red-200/80 dark:border-red-900/50 px-4 py-2 rounded-xl font-semibold text-sm transition-all active:scale-[0.97] cursor-pointer"
+            className="flex items-center gap-2 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 border border-red-200/80 dark:border-red-900/50 px-4 py-2 rounded-xl font-semibold text-xs transition-all active:scale-[0.97] cursor-pointer"
           >
-            <LogOut className="w-4 h-4" /> Log out
+            <LogOut className="w-3.5 h-3.5" /> Log out
           </button>
         </div>
       </nav>

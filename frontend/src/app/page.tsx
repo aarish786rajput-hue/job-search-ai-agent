@@ -15,6 +15,7 @@ import {
   User,
   Bookmark,
   CheckCircle,
+  Bot,
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "./components/ThemeToggle";
@@ -156,22 +157,28 @@ export default function Home() {
             <Sparkles className="w-5 h-5" />
             Capabl.
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <Link
+              href="/interview"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/60 hover:bg-indigo-100 transition-colors"
+            >
+              <Bot className="w-3.5 h-3.5" /> Mock Interview &amp; Career AI
+            </Link>
             <NotificationBell />
             <ThemeToggle />
             {isLoggedIn ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Link
                   href="/profile"
-                  className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700/80 hover:border-indigo-300 dark:hover:border-indigo-500/50 bg-slate-50/50 dark:bg-slate-800/60 px-4 py-2 rounded-xl font-semibold text-sm transition-all"
+                  className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700/80 hover:border-indigo-300 dark:hover:border-indigo-500/50 bg-slate-50/50 dark:bg-slate-800/60 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all"
                 >
-                  <User className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> My Profile
+                  <User className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" /> Profile
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 border border-red-200/80 dark:border-red-900/50 px-4 py-2 rounded-xl font-semibold text-sm transition-all active:scale-[0.97] cursor-pointer"
+                  className="flex items-center gap-1.5 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 border border-red-200/80 dark:border-red-900/50 px-3 py-2 rounded-xl font-semibold text-xs transition-all active:scale-[0.97] cursor-pointer"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-3.5 h-3.5" />
                   Log out
                 </button>
               </div>
@@ -179,15 +186,15 @@ export default function Home() {
               <>
                 <Link
                   href="/login"
-                  className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-semibold hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-sm px-3 py-2 rounded-xl"
+                  className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-semibold hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-xs px-2.5 py-2 rounded-xl"
                 >
-                  <LogIn className="w-4 h-4" /> Log in
+                  <LogIn className="w-3.5 h-3.5" /> Log in
                 </Link>
                 <Link
                   href="/register"
-                  className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-semibold transition-all shadow-sm hover:shadow-indigo-500/25 text-sm active:scale-[0.98]"
+                  className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl font-semibold transition-all shadow-sm hover:shadow-indigo-500/25 text-xs active:scale-[0.98]"
                 >
-                  <UserPlus className="w-4 h-4" /> Sign up
+                  <UserPlus className="w-3.5 h-3.5" /> Sign up
                 </Link>
               </>
             )}
@@ -202,7 +209,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 pt-12 pb-16 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold mb-6 border border-indigo-100 dark:border-indigo-800/60 shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>AI Career Agent, Job Alerts & ATS Pipeline (Week 4 Complete)</span>
+            <span>AI Mock Interviews, Skill Roadmaps & Salary Negotiation (Week 5 Complete)</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             Find your dream job <br className="hidden md:block" />

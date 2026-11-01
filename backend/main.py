@@ -7,7 +7,8 @@ from app.core.database import engine, Base
 from app.models.user import User
 from app.models.application import JobApplication
 from app.models.alert import JobAlert
-from app.api import auth, resume, applications, agent, alerts
+from app.models.interview import MockInterview, ScheduledInterview
+from app.api import auth, resume, applications, agent, alerts, interview, roadmap
 from sqlalchemy import inspect, text
 
 # Create all database tables on startup
@@ -56,6 +57,8 @@ app.include_router(resume.router, prefix="/api/resume", tags=["Resume & ATS"])
 app.include_router(applications.router, prefix="/api/applications", tags=["Applications ATS"])
 app.include_router(alerts.router, prefix="/api/alerts", tags=["Job Alerts"])
 app.include_router(agent.router, prefix="/api/agent", tags=["LangGraph Agent"])
+app.include_router(interview.router, prefix="/api/interview", tags=["AI Mock Interview & Negotiation"])
+app.include_router(roadmap.router, prefix="/api/roadmap", tags=["Career Path & Roadmap"])
 
 
 # ─── Models ───────────────────────────────────────────────────────────────────
