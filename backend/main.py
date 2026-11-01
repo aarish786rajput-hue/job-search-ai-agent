@@ -6,10 +6,34 @@ from typing import List, Optional
 from app.core.database import engine, Base
 from app.models.user import User
 from app.models.application import JobApplication
-from app.api import auth, resume, applications, agent
+from app.models.alert import JobAlert
+from app.api import auth, resume, applications, agent, alerts
+from sqlalchemy import inspect, text
 
 # Create all database tables on startup
 Base.metadata.create_all(bind=engine)
+
+# Auto-migrate SQLite schema for Week 4 new columns if needed
+try:
+    inspector = inspect(engine)
+    if "users" in inspector.get_table_names():
+        existing_cols = [c["name"] for c in inspector.get_columns("users")]
+        with engine.connect() as conn:
+            new_cols = {
+                "target_role": "VARCHAR DEFAULT 'Full Stack Developer'",
+                "target_salary": "VARCHAR DEFAULT '15 LPA'",
+                "preferred_locations": "VARCHAR DEFAULT 'Bengaluru, Remote'",
+                "notice_period": "VARCHAR DEFAULT '30 days'",
+                "work_mode": "VARCHAR DEFAULT 'Hybrid'",
+                "primary_skills": "VARCHAR DEFAULT 'React, Next.js, FastAPI, Python'",
+                "experience_years": "VARCHAR DEFAULT '2-4 Years'"
+            }
+            for col_name, col_type in new_cols.items():
+                if col_name not in existing_cols:
+                    conn.execute(text(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}"))
+            conn.commit()
+except Exception as e:
+    print(f"Database migration notice: {e}")
 
 app = FastAPI(
     title="Job Search AI Agent API",
@@ -30,6 +54,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(resume.router, prefix="/api/resume", tags=["Resume & ATS"])
 app.include_router(applications.router, prefix="/api/applications", tags=["Applications ATS"])
+app.include_router(alerts.router, prefix="/api/alerts", tags=["Job Alerts"])
 app.include_router(agent.router, prefix="/api/agent", tags=["LangGraph Agent"])
 
 

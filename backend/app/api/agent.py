@@ -10,6 +10,7 @@ class AgentChatRequest(BaseModel):
     query: str
     role: Optional[str] = None
     location: Optional[str] = None
+    company: Optional[str] = None
 
 class AgentChatResponse(BaseModel):
     reply: str
@@ -20,5 +21,5 @@ class AgentChatResponse(BaseModel):
 @router.post("/chat", response_model=AgentChatResponse)
 def chat_with_agent(req: AgentChatRequest):
     """Interact with the LangGraph Career Planning AI Agent."""
-    output = run_career_agent(req.query, req.role, req.location)
+    output = run_career_agent(req.query, req.role, req.location, req.company)
     return output

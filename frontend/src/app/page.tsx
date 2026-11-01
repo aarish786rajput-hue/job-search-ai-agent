@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { NotificationBell } from "./components/NotificationBell";
 import { ResumeAnalyzer } from "./components/ResumeAnalyzer";
 import { CareerAgentModal } from "./components/CareerAgentModal";
 import { API_BASE } from "./lib/api";
@@ -156,6 +157,7 @@ export default function Home() {
             Capabl.
           </Link>
           <div className="flex items-center gap-3">
+            <NotificationBell />
             <ThemeToggle />
             {isLoggedIn ? (
               <div className="flex items-center gap-3">
@@ -200,7 +202,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 pt-12 pb-16 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold mb-6 border border-indigo-100 dark:border-indigo-800/60 shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>AI Career Agent & ATS Optimizer (Week 3)</span>
+            <span>AI Career Agent, Job Alerts & ATS Pipeline (Week 4 Complete)</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             Find your dream job <br className="hidden md:block" />

@@ -2,7 +2,8 @@ from typing import TypedDict, Annotated, List, Dict, Any, Optional
 import operator
 from langgraph.graph import StateGraph, END
 
-# Career Tools
+# ─── Career Tools ─────────────────────────────────────────────────────────────
+
 def search_jobs_tool(role: str = "", location: str = "") -> List[Dict[str, Any]]:
     from main import MOCK_JOBS
     results = MOCK_JOBS
@@ -68,11 +69,141 @@ def resume_optimizer_tool(role: str) -> Dict[str, Any]:
         "action_verbs": ["Architected", "Engineered", "Optimized", "Spearheaded", "Deployed"]
     }
 
+# Week 4 Tool: Company Information Lookup (AmbitionBox & Glassdoor style)
+COMPANY_DATABASE = {
+    "google": {
+        "name": "Google India",
+        "rating": 4.6,
+        "wlb_rating": 4.4,
+        "sentiment": "92% approve of CEO • High employee satisfaction",
+        "locations": "Bengaluru, Hyderabad, Gurgaon",
+        "salary_range": "25 - 65+ LPA",
+        "notice_period": "30 days buyout or standard notice",
+        "work_mode": "Hybrid (3 days in-office)",
+        "tech_stack": "Go, C++, Python, Kubernetes, TensorFlow, GCP",
+        "interview_difficulty": "Challenging (DSA, System Design, Googleyness)",
+        "culture_summary": "Top-tier engineering culture, world-class amenities, strong work-life balance."
+    },
+    "microsoft": {
+        "name": "Microsoft India (IDC)",
+        "rating": 4.5,
+        "wlb_rating": 4.5,
+        "sentiment": "90% positive outlook • Stable growth",
+        "locations": "Hyderabad, Bengaluru, Noida",
+        "salary_range": "22 - 60+ LPA",
+        "notice_period": "30-60 days",
+        "work_mode": "Flexible Hybrid",
+        "tech_stack": "C#, .NET Core, Azure, TypeScript, Python, React",
+        "interview_difficulty": "Moderate to Hard (Problem Solving & Low Level Design)",
+        "culture_summary": "Exceptional work-life balance, collaborative team culture, extensive healthcare."
+    },
+    "flipkart": {
+        "name": "Flipkart",
+        "rating": 4.2,
+        "wlb_rating": 3.8,
+        "sentiment": "High ownership • Rapid execution environment",
+        "locations": "Bengaluru",
+        "salary_range": "18 - 55 LPA",
+        "notice_period": "30-60 days",
+        "work_mode": "Hybrid (Bengaluru campus)",
+        "tech_stack": "Java, Dropwizard, Kafka, Aerospike, React, Python",
+        "interview_difficulty": "Hard (High-concurrency System Design & Data Structures)",
+        "culture_summary": "Fast-paced e-commerce scale, high engineering autonomy, lucrative ESOPs."
+    },
+    "swiggy": {
+        "name": "Swiggy",
+        "rating": 4.2,
+        "wlb_rating": 4.0,
+        "sentiment": "Remote-first culture with occasional offsites",
+        "locations": "Bengaluru, Remote",
+        "salary_range": "18 - 48 LPA",
+        "notice_period": "30 days",
+        "work_mode": "Remote-First",
+        "tech_stack": "Golang, Node.js, React Native, Kubernetes, AWS",
+        "interview_difficulty": "Moderate (Real-world system architecture & coding)",
+        "culture_summary": "High product velocity, modern tech stack, flexible work-from-anywhere model."
+    },
+    "zomato": {
+        "name": "Zomato",
+        "rating": 4.1,
+        "wlb_rating": 3.7,
+        "sentiment": "Hardworking, high adrenaline, quick turnaround",
+        "locations": "Gurgaon, Bengaluru",
+        "salary_range": "16 - 45 LPA",
+        "notice_period": "30 days",
+        "work_mode": "In-Office / Hybrid",
+        "tech_stack": "PHP, Go, React, Python, Kafka, Redis",
+        "interview_difficulty": "Fast-tracked technical and cultural fit rounds",
+        "culture_summary": "Energetic consumer startup culture with direct business impact."
+    },
+    "razorpay": {
+        "name": "Razorpay",
+        "rating": 4.3,
+        "wlb_rating": 4.1,
+        "sentiment": "Fintech unicorn with stellar developer brand",
+        "locations": "Bengaluru",
+        "salary_range": "18 - 50 LPA",
+        "notice_period": "30 days",
+        "work_mode": "Hybrid",
+        "tech_stack": "Go, PHP, React, MySQL, AWS, Docker",
+        "interview_difficulty": "Moderate-Hard (Machine Coding + Architecture)",
+        "culture_summary": "Fintech innovation leader, transparent leadership, employee-friendly ESOP policies."
+    },
+    "tcs": {
+        "name": "Tata Consultancy Services (TCS)",
+        "rating": 3.9,
+        "wlb_rating": 4.1,
+        "sentiment": "Highest job security in Indian IT sector",
+        "locations": "Mumbai, Pune, Bengaluru, Chennai, Hyderabad, Kolkata",
+        "salary_range": "3.6 - 18 LPA",
+        "notice_period": "90 days (Strictly enforced)",
+        "work_mode": "In-Office (5 days / week policy)",
+        "tech_stack": "Java, Spring Boot, Angular, Oracle, Cloud, Mainframe",
+        "interview_difficulty": "Moderate (Aptitude, Core CS concepts, Managerial round)",
+        "culture_summary": "Immense enterprise stability, international onsite opportunities, structured career ladder."
+    },
+    "infosys": {
+        "name": "Infosys",
+        "rating": 3.8,
+        "wlb_rating": 4.0,
+        "sentiment": "World-class Mysore training academy and campus",
+        "locations": "Bengaluru, Pune, Hyderabad, Chennai, Chandigarh",
+        "salary_range": "3.8 - 20 LPA",
+        "notice_period": "90 days (Mandatory in Indian IT services)",
+        "work_mode": "Hybrid / In-Office",
+        "tech_stack": "Java, Python, React, Cloud, DevOps, AI/GenAI",
+        "interview_difficulty": "Moderate (Online assessment + Technical interview)",
+        "culture_summary": "Predictable work hours, strong training and upskilling ecosystem, global brand."
+    }
+}
+
+def company_research_tool(company: str) -> Dict[str, Any]:
+    c_lower = company.lower().strip()
+    for key, data in COMPANY_DATABASE.items():
+        if key in c_lower or c_lower in key:
+            return data
+
+    # Default estimation for any other Indian employer
+    return {
+        "name": company.title() if company else "Tech Enterprise",
+        "rating": 4.0,
+        "wlb_rating": 3.9,
+        "sentiment": "85% recommend to a friend (AmbitionBox estimated)",
+        "locations": "Bengaluru, Pune, Hyderabad, Remote",
+        "salary_range": "12 - 32 LPA",
+        "notice_period": "30 to 60 days standard",
+        "work_mode": "Hybrid",
+        "tech_stack": "Python, React, Node.js, AWS, PostgreSQL",
+        "interview_difficulty": "Standard (Technical Screening + System Design + HR)",
+        "culture_summary": "Growing technology engineering team with competitive market pay."
+    }
+
 # ─── LangGraph State Definition ───────────────────────────────────────────────
 class CareerAgentState(TypedDict):
     user_query: str
     target_role: Optional[str]
     target_location: Optional[str]
+    target_company: Optional[str]
     intent: Optional[str]
     tool_results: Dict[str, Any]
     final_reply: Optional[str]
@@ -83,8 +214,17 @@ def intent_analyzer_node(state: CareerAgentState) -> CareerAgentState:
     intent = "general"
     role = state.get("target_role") or ""
     loc = state.get("target_location") or ""
+    comp = state.get("target_company") or ""
 
-    if any(k in query for k in ["salary", "package", "lpa", "earning", "compensation"]):
+    # Check company research intent
+    company_keywords = ["company", "culture", "ambitionbox", "glassdoor", "review", "work life", "rating", "google", "microsoft", "flipkart", "swiggy", "zomato", "razorpay", "tcs", "infosys"]
+    if any(k in query for k in company_keywords):
+        intent = "company"
+        for cname in ["google", "microsoft", "flipkart", "swiggy", "zomato", "razorpay", "tcs", "infosys"]:
+            if cname in query:
+                comp = cname
+                break
+    elif any(k in query for k in ["salary", "package", "lpa", "earning", "compensation"]):
         intent = "salary"
     elif any(k in query for k in ["interview", "question", "prep", "round"]):
         intent = "interview"
@@ -105,6 +245,8 @@ def intent_analyzer_node(state: CareerAgentState) -> CareerAgentState:
         state["target_role"] = role
     if loc:
         state["target_location"] = loc
+    if comp:
+        state["target_company"] = comp
 
     return state
 
@@ -112,9 +254,12 @@ def tool_executor_node(state: CareerAgentState) -> CareerAgentState:
     intent = state.get("intent", "general")
     role = state.get("target_role") or "Software Engineer"
     loc = state.get("target_location") or ""
+    comp = state.get("target_company") or "Google"
     results = {}
 
-    if intent == "salary":
+    if intent == "company":
+        results["company_data"] = company_research_tool(comp)
+    elif intent == "salary":
         results["salary_data"] = salary_benchmark_tool(role)
     elif intent == "interview":
         results["interview_data"] = interview_prep_tool(role)
@@ -123,7 +268,6 @@ def tool_executor_node(state: CareerAgentState) -> CareerAgentState:
     elif intent == "jobs":
         results["jobs_data"] = search_jobs_tool(role, loc)
     else:
-        # Default comprehensive advisory
         results["jobs_data"] = search_jobs_tool(role, loc)
         results["salary_data"] = salary_benchmark_tool(role)
 
@@ -135,7 +279,21 @@ def response_synthesizer_node(state: CareerAgentState) -> CareerAgentState:
     role = state.get("target_role") or "Software Developer"
     results = state.get("tool_results", {})
 
-    if intent == "salary" and "salary_data" in results:
+    if intent == "company" and "company_data" in results:
+        c = results["company_data"]
+        reply = (
+            f"🏢 **Company Intelligence: {c['name']}**\n\n"
+            f"⭐ **AmbitionBox & Glassdoor Rating:** {c['rating']} / 5.0\n"
+            f"⚖️ **Work-Life Balance:** {c['wlb_rating']} / 5.0\n"
+            f"💼 **Expected Salary Band:** {c['salary_range']}\n"
+            f"⏱️ **Notice Period Policy:** {c['notice_period']}\n"
+            f"🏠 **Work Mode:** {c['work_mode']}\n"
+            f"💻 **Core Tech Stack:** {c['tech_stack']}\n\n"
+            f"💡 **Culture & Interview Insights:**\n"
+            f"• {c['culture_summary']}\n"
+            f"• **Interview Difficulty:** {c['interview_difficulty']}"
+        )
+    elif intent == "salary" and "salary_data" in results:
         sal = results["salary_data"]
         reply = (
             f"💰 **Salary Insights for {role}:**\n\n"
@@ -172,9 +330,10 @@ def response_synthesizer_node(state: CareerAgentState) -> CareerAgentState:
         reply = (
             f"Hello! I am your **LangGraph Career Agent**. I can help you with:\n"
             f"1. 🔎 Finding relevant tech openings\n"
-            f"2. 💰 Benchmarking salaries (LPA) in India\n"
-            f"3. 📄 ATS Resume Optimization & Keywords\n"
-            f"4. 🎯 Technical & Behavioral Interview Prep\n\n"
+            f"2. 🏢 AmbitionBox & Glassdoor Company Intelligence\n"
+            f"3. 💰 Benchmarking salaries (LPA) in India\n"
+            f"4. 📄 ATS Resume Optimization & Keywords\n"
+            f"5. 🎯 Technical & Behavioral Interview Prep\n\n"
             f"What would you like assistance with today?"
         )
 
@@ -194,12 +353,13 @@ workflow.add_edge("synthesize_response", END)
 
 career_agent_app = workflow.compile()
 
-def run_career_agent(query: str, role: Optional[str] = None, location: Optional[str] = None) -> Dict[str, Any]:
+def run_career_agent(query: str, role: Optional[str] = None, location: Optional[str] = None, company: Optional[str] = None) -> Dict[str, Any]:
     """Execute LangGraph career agent."""
     initial_state: CareerAgentState = {
         "user_query": query,
         "target_role": role,
         "target_location": location,
+        "target_company": company,
         "intent": None,
         "tool_results": {},
         "final_reply": None

@@ -31,9 +31,27 @@ class UserResponse(BaseModel):
     email: str
     full_name: str
     is_active: bool
+    target_role: Optional[str] = "Full Stack Developer"
+    target_salary: Optional[str] = "15 LPA"
+    preferred_locations: Optional[str] = "Bengaluru, Remote"
+    notice_period: Optional[str] = "30 days"
+    work_mode: Optional[str] = "Hybrid"
+    primary_skills: Optional[str] = "React, Next.js, FastAPI, Python"
+    experience_years: Optional[str] = "2-4 Years"
 
     class Config:
         from_attributes = True
+
+
+class ProfileUpdate(BaseModel):
+    full_name: Optional[str] = None
+    target_role: Optional[str] = None
+    target_salary: Optional[str] = None
+    preferred_locations: Optional[str] = None
+    notice_period: Optional[str] = None
+    work_mode: Optional[str] = None
+    primary_skills: Optional[str] = None
+    experience_years: Optional[str] = None
 
 
 class Token(BaseModel):
@@ -122,4 +140,32 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 @router.get("/me", response_model=UserResponse)
 def get_profile(current_user: User = Depends(get_current_user)):
+    return current_user
+
+
+@router.put("/profile", response_model=UserResponse)
+def update_profile(
+    data: ProfileUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if data.full_name is not None:
+        current_user.full_name = data.full_name
+    if data.target_role is not None:
+        current_user.target_role = data.target_role
+    if data.target_salary is not None:
+        current_user.target_salary = data.target_salary
+    if data.preferred_locations is not None:
+        current_user.preferred_locations = data.preferred_locations
+    if data.notice_period is not None:
+        current_user.notice_period = data.notice_period
+    if data.work_mode is not None:
+        current_user.work_mode = data.work_mode
+    if data.primary_skills is not None:
+        current_user.primary_skills = data.primary_skills
+    if data.experience_years is not None:
+        current_user.experience_years = data.experience_years
+
+    db.commit()
+    db.refresh(current_user)
     return current_user
