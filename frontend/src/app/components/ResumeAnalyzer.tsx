@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { UploadCloud, CheckCircle2, AlertCircle, Loader2, Sparkles } from "lucide-react";
+import { UploadCloud, CheckCircle2, AlertCircle, Loader2, Sparkles, Copy, Check, FileText } from "lucide-react";
 import { API_BASE } from "../lib/api";
 
 interface ResumeAnalysis {
@@ -16,6 +16,13 @@ interface ResumeAnalysis {
   word_count: number;
 }
 
+interface TailorResult {
+  tailored_headline: string;
+  linkedin_about: string;
+  tailored_bullet_points: string[];
+  recommended_action: string;
+}
+
 interface ResumeAnalyzerProps {
   onSkillsDetected?: (skills: string[]) => void;
 }
@@ -24,6 +31,35 @@ export function ResumeAnalyzer({ onSkillsDetected }: ResumeAnalyzerProps) {
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const [error, setError] = useState("");
+  const [tailorRole, setTailorRole] = useState("Full Stack Developer");
+  const [tailorCompany, setTailorCompany] = useState("Tech Company");
+  const [tailorResult, setTailorResult] = useState<TailorResult | null>(null);
+  const [tailoring, setTailoring] = useState(false);
+  const [copiedHeadline, setCopiedHeadline] = useState(false);
+
+  const handleGenerateTailoring = async () => {
+    if (!analysis) return;
+    setTailoring(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/resume/tailor`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resume_text: analysis.skills.join(", ") + " Software Engineer experienced in web development",
+          target_role: tailorRole,
+          target_company: tailorCompany
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setTailorResult(data);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setTailoring(false);
+    }
+  };
 
   const handleFileUpload = async (uploadedFile: File) => {
     setLoading(true);
@@ -201,6 +237,97 @@ export function ResumeAnalyzer({ onSkillsDetected }: ResumeAnalyzerProps) {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Week 6 Option A2: Role-Tailored Resume & LinkedIn Pitch Engine */}
+          <div className="bg-gradient-to-br from-indigo-50/50 to-white dark:from-slate-800/90 dark:to-slate-900 border border-indigo-100 dark:border-indigo-900/40 rounded-2xl p-5 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  Tailor Resume &amp; LinkedIn Profile (Week 6 AI Engine)
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Generate company-targeted bullet points and LinkedIn bio aligned to your target vacancy.
+                </p>
+              </div>
+
+              <button
+                onClick={handleGenerateTailoring}
+                disabled={tailoring}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer disabled:opacity-50 self-start sm:self-auto"
+              >
+                {tailoring ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                Generate Tailored Content
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Target Role
+                </label>
+                <input
+                  type="text"
+                  value={tailorRole}
+                  onChange={(e) => setTailorRole(e.target.value)}
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Target Company
+                </label>
+                <input
+                  type="text"
+                  value={tailorCompany}
+                  onChange={(e) => setTailorCompany(e.target.value)}
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+
+            {tailorResult && (
+              <div className="space-y-3 pt-3 border-t border-indigo-100 dark:border-slate-700 animate-in fade-in duration-200">
+                {/* LinkedIn Headline */}
+                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                      Optimized LinkedIn Headline
+                    </span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(tailorResult.tailored_headline);
+                        setCopiedHeadline(true);
+                        setTimeout(() => setCopiedHeadline(false), 2000);
+                      }}
+                      className="text-xs text-slate-400 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedHeadline ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                      <span className="text-[10px]">{copiedHeadline ? "Copied" : "Copy"}</span>
+                    </button>
+                  </div>
+                  <p className="text-xs text-slate-800 dark:text-slate-200 font-medium">
+                    {tailorResult.tailored_headline}
+                  </p>
+                </div>
+
+                {/* Tailored Bullet Points */}
+                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+                  <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1.5">
+                    Tailored High-Impact ATS Experience Bullets
+                  </span>
+                  <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
+                    {tailorResult.tailored_bullet_points.map((bp, idx) => (
+                      <li key={idx} className="flex items-start gap-1.5">
+                        <span className="text-indigo-600 dark:text-indigo-400 font-bold">•</span>
+                        <span>{bp}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

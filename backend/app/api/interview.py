@@ -265,3 +265,41 @@ def salary_negotiation_assistant(req: NegotiationRequest):
         "email_draft": email_draft,
         "talking_points": talking_points
     }
+
+@router.get("/history")
+def get_interview_history(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Retrieve history of completed AI mock interviews for candidate performance tracking."""
+    records = db.query(MockInterview).filter(MockInterview.user_id == current_user.id).order_by(MockInterview.created_at.desc()).all()
+    return [
+        {
+            "id": r.id,
+            "role": r.role,
+            "difficulty": r.difficulty,
+            "total_score": r.total_score,
+            "questions_answered": r.questions_answered,
+            "feedback_summary": r.feedback_summary,
+            "created_at": r.created_at.strftime("%d %b %Y, %I:%M %p") if r.created_at else ""
+        }
+        for r in records
+    ]
+
+@router.get("/scheduled")
+def get_scheduled_interviews(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Retrieve all upcoming scheduled mock interview sessions."""
+    records = db.query(ScheduledInterview).filter(ScheduledInterview.user_id == current_user.id).order_by(ScheduledInterview.scheduled_for.asc()).all()
+    return [
+        {
+            "id": r.id,
+            "role": r.role,
+            "scheduled_for": r.scheduled_for.strftime("%d %b %Y at %I:%M %p") if r.scheduled_for else "",
+            "reminder_channel": r.reminder_channel,
+            "is_completed": r.is_completed
+        }
+        for r in records
+    ]

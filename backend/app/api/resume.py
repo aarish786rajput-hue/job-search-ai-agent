@@ -102,3 +102,24 @@ def match_resume_to_job(req: JobMatchRequest):
         "missing_skills": missing,
         "recommendation": rec
     }
+
+class TailorResumeRequest(BaseModel):
+    resume_text: str
+    target_role: str
+    target_company: Optional[str] = ""
+
+@router.post("/tailor")
+def tailor_resume(req: TailorResumeRequest):
+    """
+    Week 6: Generate tailored resume bullets and LinkedIn profile optimizations
+    tailored specifically for a job application.
+    """
+    from app.services.career_apis import generate_tailored_resume_and_linkedin
+    if not req.resume_text.strip():
+        raise HTTPException(status_code=400, detail="Resume text is required for tailoring.")
+    
+    return generate_tailored_resume_and_linkedin(
+        resume_text=req.resume_text,
+        target_job_title=req.target_role,
+        target_company=req.target_company or ""
+    )

@@ -1,39 +1,41 @@
 from typing import TypedDict, Annotated, List, Dict, Any, Optional
 import operator
 from langgraph.graph import StateGraph, END
+from app.services.career_apis import (
+    fetch_live_jobs_with_fallback,
+    fetch_company_intelligence_with_fallback,
+    calculate_realtime_salary_benchmark,
+    analyze_github_developer_profile
+)
 
 # ─── Career Tools ─────────────────────────────────────────────────────────────
 
 def search_jobs_tool(role: str = "", location: str = "") -> List[Dict[str, Any]]:
-    from main import MOCK_JOBS
-    results = MOCK_JOBS
-    if role:
-        results = [j for j in results if role.lower() in j.title.lower() or role.lower() in j.description.lower()]
-    if location:
-        results = [j for j in results if location.lower() in j.location.lower()]
+    live_data = fetch_live_jobs_with_fallback(role=role, location=location, limit=4)
     return [
         {
-            "id": j.id,
-            "title": j.title,
-            "company": j.company,
-            "location": j.location,
-            "salary": j.salary,
-            "experience": j.experience
-        } for j in results[:4]
+            "id": j["id"],
+            "title": j["title"],
+            "company": j["company"],
+            "location": j["location"],
+            "salary": j["salary"],
+            "experience": j.get("experience", "2-4 Years"),
+            "source": j.get("source", "verified_database")
+        } for j in live_data.get("jobs", [])[:4]
     ]
 
-def salary_benchmark_tool(role: str) -> Dict[str, Any]:
-    role_lower = role.lower()
-    if "ai" in role_lower or "ml" in role_lower or "machine learning" in role_lower:
-        return {"role": role, "fresher": "8-14 LPA", "mid": "18-28 LPA", "senior": "30-50+ LPA", "top_locations": "Bengaluru, Hyderabad, Pune"}
-    elif "frontend" in role_lower or "react" in role_lower:
-        return {"role": role, "fresher": "4.5-8 LPA", "mid": "10-18 LPA", "senior": "22-35 LPA", "top_locations": "Bengaluru, NCR, Mumbai"}
-    elif "backend" in role_lower or "python" in role_lower or "fastapi" in role_lower:
-        return {"role": role, "fresher": "5-9 LPA", "mid": "12-22 LPA", "senior": "25-40 LPA", "top_locations": "Bengaluru, Pune, Hyderabad"}
-    elif "data" in role_lower:
-        return {"role": role, "fresher": "6-10 LPA", "mid": "14-24 LPA", "senior": "28-45 LPA", "top_locations": "Bengaluru, Mumbai, Gurgaon"}
-    else:
-        return {"role": role or "Software Engineer", "fresher": "5-8 LPA", "mid": "12-18 LPA", "senior": "22-35 LPA", "top_locations": "Bengaluru, Hyderabad, Pune"}
+def salary_benchmark_tool(role: str, location: str = "Bengaluru") -> Dict[str, Any]:
+    res = calculate_realtime_salary_benchmark(role=role, location=location)
+    return {
+        "role": role or "Software Engineer",
+        "location": res.get("location", location),
+        "location_tier": res.get("location_tier", "Tier-1 Metro"),
+        "fresher": res["bands"]["fresher"],
+        "mid": res["bands"]["mid_level"],
+        "senior": res["bands"]["senior_lead"],
+        "estimated_in_hand_monthly_mid": res.get("estimated_in_hand_monthly_mid", ""),
+        "top_locations": "Bengaluru, Hyderabad, Pune, Mumbai, Gurgaon"
+    }
 
 def interview_prep_tool(role: str) -> Dict[str, Any]:
     role_lower = role.lower()
@@ -178,25 +180,14 @@ COMPANY_DATABASE = {
 }
 
 def company_research_tool(company: str) -> Dict[str, Any]:
-    c_lower = company.lower().strip()
-    for key, data in COMPANY_DATABASE.items():
-        if key in c_lower or c_lower in key:
-            return data
-
-    # Default estimation for any other Indian employer
-    return {
-        "name": company.title() if company else "Tech Enterprise",
-        "rating": 4.0,
-        "wlb_rating": 3.9,
-        "sentiment": "85% recommend to a friend (AmbitionBox estimated)",
-        "locations": "Bengaluru, Pune, Hyderabad, Remote",
-        "salary_range": "12 - 32 LPA",
-        "notice_period": "30 to 60 days standard",
-        "work_mode": "Hybrid",
-        "tech_stack": "Python, React, Node.js, AWS, PostgreSQL",
-        "interview_difficulty": "Standard (Technical Screening + System Design + HR)",
-        "culture_summary": "Growing technology engineering team with competitive market pay."
-    }
+    intel = fetch_company_intelligence_with_fallback(company)
+    c_info = intel.get("company", {})
+    # Ensure locations is string for formatting
+    if isinstance(c_info.get("locations"), list):
+        c_info["locations"] = ", ".join(c_info["locations"])
+    if isinstance(c_info.get("tech_stack"), list):
+        c_info["tech_stack"] = ", ".join(c_info["tech_stack"])
+    return c_info
 
 # ─── LangGraph State Definition ───────────────────────────────────────────────
 class CareerAgentState(TypedDict):

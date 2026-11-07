@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Sparkles, ArrowLeft, Bot, Award, CheckCircle, AlertCircle,
-  HelpCircle, ArrowRight, Loader2, Copy, Check, Calendar,
-  DollarSign, TrendingUp, Compass, BookOpen, Clock, Send
+  ArrowRight, Loader2, Copy, Check, Calendar,
+  DollarSign, TrendingUp, Compass, BookOpen, Send
 } from "lucide-react";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { NotificationBell } from "../components/NotificationBell";

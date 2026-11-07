@@ -36,12 +36,24 @@ jobs:
           python -m py_compile app/api/resume.py
           python -m py_compile app/api/applications.py
           python -m py_compile app/api/agent.py
+          python -m py_compile app/api/alerts.py
+          python -m py_compile app/api/interview.py
+          python -m py_compile app/api/roadmap.py
           python -m py_compile app/services/resume_parser.py
+          python -m py_compile app/services/career_apis.py
           python -m py_compile app/agent/career_agent.py
           python -m py_compile app/core/database.py
           python -m py_compile app/models/user.py
           python -m py_compile app/models/application.py
-          echo "✅ All Week 3 backend files passed syntax check!"
+          python -m py_compile app/models/alert.py
+          python -m py_compile app/models/interview.py
+          echo "✅ All Week 6 backend files passed syntax check!"
+
+      - name: Run Automated Test Suite (Week 6 Checkpoint)
+        run: |
+          cd backend
+          python -m unittest discover -s tests -p "test_*.py"
+          echo "✅ All automated unit tests passed!"
 
   # ──────────────────────────────────────────────
   # 2. Frontend (Next.js) Build Check

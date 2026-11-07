@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
-  User, Mail, Shield, Sparkles,
+  Sparkles,
   LogOut, ArrowLeft, Loader2, AlertCircle, CheckCircle,
   Bookmark, Trash2, Bell, Briefcase, MapPin, DollarSign,
-  Clock, Plus, Send, ToggleLeft, ToggleRight, Radio, Save, Bot
+  Clock, Plus, Send, ToggleLeft, ToggleRight, Save, Bot,
+  Award, Calendar, Code2, ExternalLink
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "../components/ThemeToggle";
@@ -51,13 +52,52 @@ interface TrackedApplication {
   created_at: string;
 }
 
+interface MockInterviewRecord {
+  id: number;
+  role: string;
+  difficulty: string;
+  total_score: number;
+  questions_answered: number;
+  feedback_summary: string;
+  created_at: string;
+}
+
+interface ScheduledRecord {
+  id: number;
+  role: string;
+  scheduled_for: string;
+  reminder_channel: string;
+  is_completed: boolean;
+}
+
+interface GitHubPortfolio {
+  username: string;
+  name: string;
+  bio: string;
+  avatar_url: string;
+  public_repos: number;
+  followers: number;
+  total_stars: number;
+  detected_languages: string[];
+  featured_repos: Array<{ name: string; description: string; language: string; stars: number; url: string }>;
+  portfolio_score: number;
+  ats_recommendation: string;
+  provider: string;
+}
+
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [applications, setApplications] = useState<TrackedApplication[]>([]);
   const [alerts, setAlerts] = useState<JobAlert[]>([]);
+  const [interviews, setInterviews] = useState<MockInterviewRecord[]>([]);
+  const [scheduledList, setScheduledList] = useState<ScheduledRecord[]>([]);
+  const [ghUsername, setGhUsername] = useState("developer");
+  const [githubData, setGithubData] = useState<GitHubPortfolio | null>(null);
+  const [loadingGithub, setLoadingGithub] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"goals" | "alerts" | "applications">("goals");
+  const [activeTab, setActiveTab] = useState<"goals" | "alerts" | "applications" | "interviews" | "portfolio">("goals");
   const [toastMessage, setToastMessage] = useState<string>("");
   const router = useRouter();
 
@@ -94,7 +134,7 @@ export default function ProfilePage() {
 
     const fetchData = async () => {
       try {
-        const [profRes, appRes, alertRes] = await Promise.all([
+        const [profRes, appRes, alertRes, ivRes, schedRes] = await Promise.all([
           fetch(`${API_BASE}/api/auth/me`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
@@ -103,7 +143,13 @@ export default function ProfilePage() {
           }),
           fetch(`${API_BASE}/api/alerts`, {
             headers: { Authorization: `Bearer ${token}` }
-          })
+          }),
+          fetch(`${API_BASE}/api/interview/history`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }).catch(() => null),
+          fetch(`${API_BASE}/api/interview/scheduled`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }).catch(() => null)
         ]);
 
         if (profRes.status === 401) {
@@ -133,6 +179,16 @@ export default function ProfilePage() {
           const alertData = await alertRes.json();
           setAlerts(alertData);
         }
+
+        if (ivRes && ivRes.ok) {
+          const ivData = await ivRes.json();
+          setInterviews(ivData);
+        }
+
+        if (schedRes && schedRes.ok) {
+          const schedData = await schedRes.json();
+          setScheduledList(schedData);
+        }
       } catch {
         setError("Could not load profile. Please try again.");
       } finally {
@@ -142,6 +198,26 @@ export default function ProfilePage() {
 
     fetchData();
   }, [router]);
+
+  const handleAnalyzeGithub = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!ghUsername.trim()) return;
+    setLoadingGithub(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/agent/github-portfolio?username=${encodeURIComponent(ghUsername)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setGithubData(data);
+        showToast(`GitHub profile '${data.username}' analyzed (Portfolio Score: ${data.portfolio_score}/100)!`);
+      } else {
+        showToast("Could not analyze GitHub profile.");
+      }
+    } catch {
+      showToast("Error connecting to GitHub analyzer API.");
+    } finally {
+      setLoadingGithub(false);
+    }
+  };
 
   // ── Save Career Goals ──────────────────────────────────────────────────────
   const handleSaveGoals = async (e: React.FormEvent) => {
@@ -486,6 +562,30 @@ export default function ProfilePage() {
           >
             <Bookmark className="w-4 h-4" />
             ATS Tracker ({applications.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab("interviews")}
+            className={`flex items-center gap-2 pb-3 px-4 font-semibold text-sm border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === "interviews"
+                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+            }`}
+          >
+            <Bot className="w-4 h-4" />
+            Interviews &amp; Schedule ({interviews.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab("portfolio")}
+            className={`flex items-center gap-2 pb-3 px-4 font-semibold text-sm border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === "portfolio"
+                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+            }`}
+          >
+            <Code2 className="w-4 h-4" />
+            GitHub Portfolio (API)
           </button>
         </div>
 
@@ -948,6 +1048,268 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── TAB 4: MOCK INTERVIEWS & CALENDAR SCHEDULE (WEEK 6) ───────────── */}
+        {activeTab === "interviews" && (
+          <div className="space-y-6">
+            {/* Scheduled Sessions Card */}
+            <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-indigo-500" />
+                    Scheduled Interview Sessions
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Google Calendar integrated practice sessions and reminders.
+                  </p>
+                </div>
+                <Link
+                  href="/interview"
+                  className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-md shadow-indigo-600/20"
+                >
+                  <Bot className="w-4 h-4" /> Schedule New Session
+                </Link>
+              </div>
+
+              {scheduledList.length === 0 ? (
+                <div className="text-center py-8 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+                  <Calendar className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                  <p className="font-semibold text-xs text-slate-700 dark:text-slate-300">No scheduled sessions</p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Book an interview prep time to get Google Calendar reminders.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {scheduledList.map((s, idx) => (
+                    <div
+                      key={idx}
+                      className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-between"
+                    >
+                      <div>
+                        <h4 className="font-bold text-sm text-slate-900 dark:text-white">{s.role}</h4>
+                        <p className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold mt-1 flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" /> {s.scheduled_for}
+                        </p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">{s.reminder_channel}</p>
+                      </div>
+                      <Link
+                        href="/interview"
+                        className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                      >
+                        Start →
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Past Interview History Card */}
+            <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Award className="w-5 h-5 text-emerald-500" />
+                    AI Mock Interview Score History
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Evaluated answers and performance rubric across technical domains.
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                  {interviews.length} Sessions Completed
+                </span>
+              </div>
+
+              {interviews.length === 0 ? (
+                <div className="text-center py-8 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+                  <Award className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                  <p className="font-semibold text-xs text-slate-700 dark:text-slate-300">No mock interview sessions recorded yet</p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Complete your first technical round in the AI Mock Interview Arena to record performance benchmarks.
+                  </p>
+                  <Link
+                    href="/interview"
+                    className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                  >
+                    Open Interview Arena →
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {interviews.map((iv, idx) => (
+                    <div
+                      key={idx}
+                      className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    >
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">{iv.role}</h4>
+                          <span className="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">
+                            {iv.difficulty}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{iv.feedback_summary}</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">{iv.created_at}</p>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <span className="text-xs text-slate-400 block">Score</span>
+                          <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
+                            {iv.total_score}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB 5: GITHUB DEVELOPER PORTFOLIO (WEEK 6 API INTEGRATION) ────── */}
+        {activeTab === "portfolio" && (
+          <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+            <div className="mb-6">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-violet-700 dark:text-violet-300 text-xs font-bold mb-2">
+                <Code2 className="w-3.5 h-3.5" />
+                Live GitHub API &amp; Portfolio Assessment (Week 6)
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                GitHub Developer Portfolio &amp; Code Intelligence
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Analyze public repositories, languages breakdown, and calculate ATS code readiness metrics.
+              </p>
+            </div>
+
+            {/* Input Form */}
+            <form onSubmit={handleAnalyzeGithub} className="flex gap-3 mb-8">
+              <input
+                type="text"
+                value={ghUsername}
+                onChange={(e) => setGhUsername(e.target.value)}
+                placeholder="Enter GitHub username (e.g. torvalds or your handle)"
+                className="flex-1 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-2xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="submit"
+                disabled={loadingGithub}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-3 rounded-2xl transition-all shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                {loadingGithub ? <Loader2 className="w-4 h-4 animate-spin" /> : <Code2 className="w-4 h-4" />}
+                Analyze Portfolio
+              </button>
+            </form>
+
+            {/* Results Display */}
+            {githubData && (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                {/* Profile Overview Card */}
+                <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-indigo-50/30 dark:from-slate-800/50 dark:to-indigo-950/20 border border-slate-200/80 dark:border-slate-700/70 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={githubData.avatar_url}
+                      alt={githubData.username}
+                      className="w-16 h-16 rounded-2xl border-2 border-indigo-200 dark:border-indigo-800 object-cover"
+                    />
+                    <div>
+                      <h3 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                        {githubData.name}
+                        <span className="text-xs text-indigo-600 dark:text-indigo-400 font-medium">
+                          @{githubData.username}
+                        </span>
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{githubData.bio}</p>
+                      <div className="flex items-center gap-4 text-xs font-semibold text-slate-600 dark:text-slate-300 mt-2">
+                        <span>📦 {githubData.public_repos} Repos</span>
+                        <span>⭐ {githubData.total_stars} Stars</span>
+                        <span>👥 {githubData.followers} Followers</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-center sm:text-right px-4 py-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/60 dark:border-slate-700 shadow-xs">
+                    <span className="text-[11px] font-bold text-slate-400 block uppercase tracking-wider">
+                      Portfolio Score
+                    </span>
+                    <span className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                      {githubData.portfolio_score}
+                      <span className="text-sm text-slate-400 font-normal"> / 100</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Languages Detected */}
+                <div>
+                  <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                    Verified Tech Stack from Code Repositories
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {githubData.detected_languages.map((lang, idx) => (
+                      <span
+                        key={idx}
+                        className="px-3 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs font-bold"
+                      >
+                        {lang}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Featured Projects */}
+                <div>
+                  <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                    Featured Repositories
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {githubData.featured_repos.map((r, idx) => (
+                      <div
+                        key={idx}
+                        className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/60 flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-bold text-sm text-slate-900 dark:text-white">{r.name}</span>
+                            <span className="text-xs text-amber-500 font-bold flex items-center gap-1">
+                              ⭐ {r.stars}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">{r.description}</p>
+                        </div>
+                        <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-100 dark:border-slate-700/50">
+                          <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
+                            {r.language}
+                          </span>
+                          <a
+                            href={r.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-bold text-slate-500 hover:text-indigo-600 flex items-center gap-1"
+                          >
+                            View <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ATS Recommendation Banner */}
+                <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 shrink-0 text-emerald-600" />
+                  <span>
+                    <strong>ATS Recommendation:</strong> {githubData.ats_recommendation}
+                  </span>
+                </div>
               </div>
             )}
           </div>

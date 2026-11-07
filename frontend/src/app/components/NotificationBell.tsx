@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Bell, CheckCheck, Mail, MessageSquare, Trash2, ExternalLink } from "lucide-react";
+import { Bell, Mail, MessageSquare, Trash2 } from "lucide-react";
 import { API_BASE } from "../lib/api";
 
 interface NotificationItem {
@@ -35,7 +35,9 @@ export function NotificationBell() {
   };
 
   useEffect(() => {
-    fetchNotifications();
+    Promise.resolve().then(() => {
+      fetchNotifications();
+    });
     const interval = setInterval(fetchNotifications, 15000);
     return () => clearInterval(interval);
   }, []);
