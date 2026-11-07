@@ -72,7 +72,7 @@ export default function Register() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-lg mb-6 hover:opacity-85 transition-opacity">
-            <Sparkles className="w-5 h-5" /> CareerCraft
+            <Sparkles className="w-5 h-5" /> CareerOrbit
           </Link>
           <div className="w-14 h-14 bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-violet-100 dark:border-violet-800/60 shadow-sm">
             <User className="w-6 h-6" />

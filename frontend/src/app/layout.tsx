@@ -3,7 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "CareerCraft — AI Job Search & Career Intelligence",
+  title: "CareerOrbit — AI Job Search & Career Intelligence",
   description: "AI-powered career platform to find jobs, optimize resumes for ATS, and prepare for interviews.",
 };
 

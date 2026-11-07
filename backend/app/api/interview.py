@@ -200,7 +200,7 @@ def schedule_interview(
 
     # Generate Google Calendar link
     title = urllib.parse.quote(f"Mock Interview Practice: {req.role}")
-    details = urllib.parse.quote(f"AI-Powered Technical Mock Interview session for {req.role} on CareerCraft platform.")
+    details = urllib.parse.quote(f"AI-Powered Technical Mock Interview session for {req.role} on CareerOrbit platform.")
     start_fmt = sched_dt.strftime("%Y%m%dT%H%M00Z")
     end_fmt = sched_dt.strftime("%Y%m%dT%H%M00Z")
     gcal_url = f"https://calendar.google.com/calendar/render?action=TEMPLATE&text={title}&dates={start_fmt}/{end_fmt}&details={details}"
@@ -208,10 +208,10 @@ def schedule_interview(
     # Generate ICS calendar file content
     ics_content = f"""BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//CareerCraft AI//Mock Interview//EN
+PRODID:-//CareerOrbit AI//Mock Interview//EN
 BEGIN:VEVENT
 SUMMARY:Mock Interview Practice: {req.role}
-DESCRIPTION:Practice session for {req.role} on CareerCraft AI platform.
+DESCRIPTION:Practice session for {req.role} on CareerOrbit AI platform.
 DTSTART:{start_fmt}
 DTEND:{end_fmt}
 STATUS:CONFIRMED

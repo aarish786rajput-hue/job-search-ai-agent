@@ -155,7 +155,7 @@ export default function Home() {
         <nav className="relative z-20 flex justify-between items-center max-w-6xl mx-auto px-6 py-4">
           <Link href="/" className="font-bold text-xl text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
             <Sparkles className="w-5 h-5" />
-            CareerCraft
+            CareerOrbit
           </Link>
           <div className="flex items-center gap-2.5">
             <Link

@@ -13,7 +13,7 @@ from app.models.application import JobApplication
 from app.models.alert import JobAlert
 from app.models.interview import MockInterview, ScheduledInterview
 
-SECRET_KEY = "careercraft-job-search-ai-secret-2025"  # Move to .env in production
+SECRET_KEY = "careerorbit-job-search-ai-secret-2025"  # Move to .env in production
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 

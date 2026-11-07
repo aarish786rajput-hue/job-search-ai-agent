@@ -64,7 +64,7 @@ export default function Login() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-lg mb-6 hover:opacity-85 transition-opacity">
-            <Sparkles className="w-5 h-5" /> CareerCraft
+            <Sparkles className="w-5 h-5" /> CareerOrbit
           </Link>
           <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-indigo-100 dark:border-indigo-800/60 shadow-sm">
             <Lock className="w-6 h-6" />

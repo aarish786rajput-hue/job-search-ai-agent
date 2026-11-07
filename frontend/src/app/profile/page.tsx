@@ -450,7 +450,7 @@ export default function ProfilePage() {
       {/* Nav */}
       <nav className="relative z-10 flex justify-between items-center max-w-6xl mx-auto px-6 py-4 border-b border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md transition-colors duration-200">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
-          <Sparkles className="w-5 h-5" /> CareerCraft
+          <Sparkles className="w-5 h-5" /> CareerOrbit
         </Link>
         <div className="flex items-center gap-2.5">
           <Link

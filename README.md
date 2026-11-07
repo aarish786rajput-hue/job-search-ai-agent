@@ -1,6 +1,6 @@
-# 🚀 CareerCraft — AI Job Search & Autonomous Career Platform
+# 🚀 CareerOrbit — AI Job Search & Autonomous Career Platform
 
-[![CI - Career Agent](https://github.com/careercraft/career-agent/actions/workflows/ci.yml/badge.svg)](https://github.com)
+[![CI - Career Agent](https://github.com/careerorbit/career-agent/actions/workflows/ci.yml/badge.svg)](https://github.com)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.3-black?logo=next.js&logoColor=white)](https://nextjs.org)
 [![LangGraph](https://img.shields.io/badge/LangGraph-Cyclic_Workflow-blue)](https://langchain-ai.github.io/langgraph/)
