@@ -20,7 +20,7 @@ from app.api.interview import INTERVIEW_QUESTIONS
 
 
 class TestCareerAPIs(unittest.TestCase):
-    """Test 5+ career APIs with fallback strategies (Week 6 Track B requirement)"""
+    """Test 5+ career APIs with fallback strategies"""
 
     def test_live_jobs_fallback(self):
         result = fetch_live_jobs_with_fallback(role="AI Engineer", location="Bengaluru")

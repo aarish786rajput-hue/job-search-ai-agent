@@ -259,7 +259,7 @@ export default function InterviewCareerPage() {
       {/* Nav */}
       <nav className="relative z-10 flex justify-between items-center max-w-6xl mx-auto px-6 py-4 border-b border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md transition-colors duration-200">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
-          <Sparkles className="w-5 h-5" /> Capabl.
+          <Sparkles className="w-5 h-5" /> CareerCraft
         </Link>
         <div className="flex items-center gap-3">
           <NotificationBell />
@@ -288,7 +288,7 @@ export default function InterviewCareerPage() {
               <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
                 AI Career Suite &amp; Mock Interview Arena
                 <span className="text-xs bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-semibold px-2.5 py-1 rounded-full border border-indigo-200 dark:border-indigo-800">
-                  Week 5 Track B
+                  AI Powered
                 </span>
               </h1>
               <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
@@ -709,10 +709,10 @@ export default function InterviewCareerPage() {
               </span>
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Compass className="w-5 h-5 text-indigo-500" />
-                Skill Gap Analysis &amp; 4-Week Milestone Roadmap
+                Skill Gap Analysis &amp; Actionable Career Roadmap
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                Analyze missing competencies against industry job descriptions and follow a structured weekly curriculum.
+                Analyze missing competencies against industry job descriptions and follow a structured milestone curriculum.
               </p>
             </div>
 
@@ -805,10 +805,10 @@ export default function InterviewCareerPage() {
                   </div>
                 </div>
 
-                {/* 4-Week Milestone Roadmap */}
+                {/* Milestone Action Roadmap */}
                 <div className="space-y-3">
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                    Recommended 4-Week Action Roadmap:
+                    Recommended Milestone Action Roadmap:
                   </h4>
                   {roadmapResult.roadmap.map((step, idx) => (
                     <div

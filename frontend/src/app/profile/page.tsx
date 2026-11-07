@@ -450,7 +450,7 @@ export default function ProfilePage() {
       {/* Nav */}
       <nav className="relative z-10 flex justify-between items-center max-w-6xl mx-auto px-6 py-4 border-b border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md transition-colors duration-200">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
-          <Sparkles className="w-5 h-5" /> Capabl.
+          <Sparkles className="w-5 h-5" /> CareerCraft
         </Link>
         <div className="flex items-center gap-2.5">
           <Link
@@ -484,7 +484,7 @@ export default function ProfilePage() {
             <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
               Candidate Profile &amp; Career Hub
               <span className="text-xs bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-semibold px-2.5 py-1 rounded-full border border-indigo-200 dark:border-indigo-800">
-                Week 4 Track B
+                Candidate Hub
               </span>
             </h1>
             <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
@@ -589,7 +589,7 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* ── TAB 1: CAREER GOALS & PREFERENCES (WEEK 4 CORE) ─────────────── */}
+        {/* ── TAB 1: CAREER GOALS & PREFERENCES ─────────────── */}
         {activeTab === "goals" && (
           <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
             <div className="mb-6">
@@ -783,7 +783,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* ── TAB 2: JOB ALERT SYSTEM WITH NOTIFICATIONS (WEEK 4 CORE) ───── */}
+        {/* ── TAB 2: JOB ALERT SYSTEM WITH NOTIFICATIONS ───── */}
         {activeTab === "alerts" && (
           <div className="space-y-6">
             <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
@@ -1053,7 +1053,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* ── TAB 4: MOCK INTERVIEWS & CALENDAR SCHEDULE (WEEK 6) ───────────── */}
+        {/* ── TAB 4: MOCK INTERVIEWS & CALENDAR SCHEDULE ───────────── */}
         {activeTab === "interviews" && (
           <div className="space-y-6">
             {/* Scheduled Sessions Card */}
@@ -1175,13 +1175,13 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* ── TAB 5: GITHUB DEVELOPER PORTFOLIO (WEEK 6 API INTEGRATION) ────── */}
+        {/* ── TAB 5: GITHUB DEVELOPER PORTFOLIO (LIVE API INTEGRATION) ────── */}
         {activeTab === "portfolio" && (
           <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
             <div className="mb-6">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-violet-700 dark:text-violet-300 text-xs font-bold mb-2">
                 <Code2 className="w-3.5 h-3.5" />
-                Live GitHub API &amp; Portfolio Assessment (Week 6)
+                Live GitHub API &amp; Portfolio Assessment
               </div>
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 GitHub Developer Portfolio &amp; Code Intelligence

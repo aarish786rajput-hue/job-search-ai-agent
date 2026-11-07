@@ -10,7 +10,7 @@ class User(Base):
     full_name = Column(String, index=True)
     is_active = Column(Boolean, default=True)
 
-    # Week 4: Comprehensive Career Goals & Preferences (Indian Market Standard)
+    # Comprehensive Career Goals & Preferences (Indian Market Standard)
     target_role = Column(String, default="Full Stack Developer")
     target_salary = Column(String, default="15 LPA")
     preferred_locations = Column(String, default="Bengaluru, Remote")

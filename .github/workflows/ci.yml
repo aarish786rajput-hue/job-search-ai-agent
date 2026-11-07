@@ -47,9 +47,9 @@ jobs:
           python -m py_compile app/models/application.py
           python -m py_compile app/models/alert.py
           python -m py_compile app/models/interview.py
-          echo "✅ All Week 6 backend files passed syntax check!"
+          echo "✅ All backend files passed syntax check!"
 
-      - name: Run Automated Test Suite (Week 6 Checkpoint)
+      - name: Run Automated Test Suite
         run: |
           cd backend
           python -m unittest discover -s tests -p "test_*.py"

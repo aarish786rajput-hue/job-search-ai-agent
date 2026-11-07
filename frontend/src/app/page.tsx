@@ -155,7 +155,7 @@ export default function Home() {
         <nav className="relative z-20 flex justify-between items-center max-w-6xl mx-auto px-6 py-4">
           <Link href="/" className="font-bold text-xl text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
             <Sparkles className="w-5 h-5" />
-            Capabl.
+            CareerCraft
           </Link>
           <div className="flex items-center gap-2.5">
             <Link
@@ -209,7 +209,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 pt-12 pb-16 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold mb-6 border border-indigo-100 dark:border-indigo-800/60 shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>AI Mock Interviews, Skill Roadmaps & Salary Negotiation (Week 5 Complete)</span>
+            <span>AI Mock Interviews, Skill Roadmaps &amp; Salary Negotiation</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             Find your dream job <br className="hidden md:block" />
@@ -272,7 +272,7 @@ export default function Home() {
 
       {/* Main Content Area */}
       <div className="max-w-6xl mx-auto px-6 py-12">
-        {/* Week 3 Feature 1: Resume Upload & ATS Matcher */}
+        {/* Resume Upload & ATS Matcher */}
         <ResumeAnalyzer onSkillsDetected={handleSkillsDetected} />
 
         {/* Results Header */}
@@ -386,7 +386,7 @@ export default function Home() {
         )}
       </div>
 
-      {/* Week 3 Feature 2: Floating LangGraph Career Agent */}
+      {/* Floating LangGraph Career Agent */}
       <CareerAgentModal />
     </main>
   );

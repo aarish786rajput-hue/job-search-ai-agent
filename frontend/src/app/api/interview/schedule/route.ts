@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const time = body.time || "10:00";
 
     const title = encodeURIComponent(`Mock Interview Practice: ${role}`);
-    const details = encodeURIComponent(`AI-Powered Technical Mock Interview session for ${role} on Capabl platform.`);
+    const details = encodeURIComponent(`AI-Powered Technical Mock Interview session for ${role} on CareerCraft platform.`);
 
     // Convert date + time to basic calendar format
     const startStr = `${date.replace(/-/g, "")}T${time.replace(/:/g, "")}00Z`;
@@ -18,10 +18,10 @@ export async function POST(request: Request) {
 
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Capabl AI//Mock Interview//EN
+PRODID:-//CareerCraft AI//Mock Interview//EN
 BEGIN:VEVENT
 SUMMARY:Mock Interview Practice: ${role}
-DESCRIPTION:Practice session for ${role} on Capabl AI platform.
+DESCRIPTION:Practice session for ${role} on CareerCraft AI platform.
 DTSTART:${startStr}
 DTEND:${startStr}
 STATUS:CONFIRMED

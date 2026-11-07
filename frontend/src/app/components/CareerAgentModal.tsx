@@ -92,7 +92,7 @@ export function CareerAgentModal() {
                 <div>
                   <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                     LangGraph Career Agent
-                    <span className="text-[10px] bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-semibold px-2 py-0.5 rounded-full">Week 4 AI</span>
+                    <span className="text-[10px] bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-semibold px-2 py-0.5 rounded-full">AI Copilot</span>
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">AI Career, Salary & Interview Assistant</p>
                 </div>

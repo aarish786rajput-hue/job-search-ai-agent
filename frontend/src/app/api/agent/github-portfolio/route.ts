@@ -8,14 +8,14 @@ export async function GET(req: NextRequest) {
 
   try {
     const userRes = await fetch(`https://api.github.com/users/${username}`, {
-      headers: { "User-Agent": "Capabl-Job-Agent" },
+      headers: { "User-Agent": "CareerCraft-Agent" },
       next: { revalidate: 60 }
     });
 
     if (userRes.ok) {
       const uData = await userRes.json();
       const reposRes = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=4`, {
-        headers: { "User-Agent": "Capabl-Job-Agent" },
+        headers: { "User-Agent": "CareerCraft-Agent" },
         next: { revalidate: 60 }
       });
       const reposData = reposRes.ok ? await reposRes.json() : [];
@@ -88,3 +88,4 @@ export async function GET(req: NextRequest) {
     ats_recommendation: "Strong repository activity verified. Add live demo URLs to your portfolio section."
   });
 }
+

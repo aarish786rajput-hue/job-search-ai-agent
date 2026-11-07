@@ -1,19 +1,19 @@
-# 🚀 Capabl AI Job Search & Career Agent (Track B — Advanced)
+# 🚀 CareerCraft — AI Job Search & Autonomous Career Platform
 
-[![CI - Job Search AI Agent](https://github.com/capabl/job-search-ai-agent/actions/workflows/ci.yml/badge.svg)](https://github.com)
+[![CI - Career Agent](https://github.com/careercraft/career-agent/actions/workflows/ci.yml/badge.svg)](https://github.com)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.3-black?logo=next.js&logoColor=white)](https://nextjs.org)
 [![LangGraph](https://img.shields.io/badge/LangGraph-Cyclic_Workflow-blue)](https://langchain-ai.github.io/langgraph/)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python&logoColor=white)](https://python.org)
-[![Status](https://img.shields.io/badge/Week_6_Milestone-100%25_Completed-success)]()
+[![Status](https://img.shields.io/badge/Status-Production_Ready-success)]()
 
-A comprehensive, industry-ready **AI Career Development & Job Search Platform** built for the Indian Tech Ecosystem. Developed as part of the Capabl AI Agent Development Project (Track B: Advanced).
+A comprehensive, industry-ready **AI Career Development & Job Search Platform** built for the modern Tech Ecosystem.
 
 ---
 
 ## 📑 Table of Contents
 - [Architecture Overview](#-architecture-overview)
-- [Week 6 Specialized Features](#-week-6-specialized-features-100-complete)
+- [Core Specialized Features](#-core-specialized-features)
 - [Indian Job Market Specialization](#-indian-job-market-specialization)
 - [5+ Career API Integrations with Fallback](#-5-career-api-integrations-with-fallback)
 - [Database Schema](#-database-schema)
@@ -57,14 +57,14 @@ graph TD
 
 ---
 
-## ✨ Week 6 Specialized Features (100% Complete)
+## ✨ Core Specialized Features
 
 | Feature | Description | File / Route |
 | :--- | :--- | :--- |
 | **5+ Career APIs with Fallbacks** | Live job fetch, company culture, GitHub code analysis, LPA benchmarks, and AI resume tailoring with circuit breaker fallbacks. | `backend/app/services/career_apis.py` |
 | **AI Mock Interview Arena** | Multi-domain technical question banks (AI, Full Stack, Backend), real-time scoring rubric, strengths/improvement feedback, and model answers. | `/interview`, `backend/app/api/interview.py` |
 | **Salary Negotiation Coach** | Indian tax & in-hand monthly salary breakdown (LPA to Monthly formula) with counter-offer email generator and talking points. | `/interview#negotiate`, `interview.py` |
-| **Skill Gap & Roadmap Engine** | Compares candidate skills against role benchmarks, calculates match %, and provides 4-week project roadmap. | `/interview#roadmap`, `roadmap.py` |
+| **Skill Gap & Roadmap Engine** | Compares candidate skills against role benchmarks, calculates match %, and provides structured milestone roadmap. | `/interview#roadmap`, `roadmap.py` |
 | **Calendar Scheduling** | Generates direct Google Calendar URLs and downloadable ICS event data for interview prep. | `/interview#schedule`, `interview.py` |
 | **GitHub Portfolio Analyzer** | Live GitHub profile audit: public repos, language breakdown, star counts, and ATS code readiness score out of 100. | `/profile` (Tab 5), `career_apis.py` |
 | **Role-Tailored Resume Engine** | Generates targeted resume bullets and LinkedIn headlines optimized for specific company job descriptions. | `ResumeAnalyzer.tsx`, `resume.py` |

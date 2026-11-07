@@ -14,7 +14,7 @@ from sqlalchemy import inspect, text
 # Create all database tables on startup
 Base.metadata.create_all(bind=engine)
 
-# Auto-migrate SQLite schema for Week 4 new columns if needed
+# Auto-migrate SQLite schema for candidate preference columns if needed
 try:
     inspector = inspect(engine)
     if "users" in inspector.get_table_names():
@@ -37,9 +37,9 @@ except Exception as e:
     print(f"Database migration notice: {e}")
 
 app = FastAPI(
-    title="Job Search AI Agent API",
+    title="CareerCraft AI Agent API",
     version="1.0.0",
-    description="AI-powered career assistant backend (Track B - Capabl Project)"
+    description="AI-powered career assistant backend"
 )
 
 # Configure CORS — allow frontend dev server and Vercel domains
@@ -72,7 +72,7 @@ class JobListing(BaseModel):
     description: str
 
 
-# ─── Mock Job Data (Week 1-2) ─────────────────────────────────────────────────
+# ─── Job Data ─────────────────────────────────────────────────────────
 MOCK_JOBS = [
     JobListing(id=1, title="Frontend Developer",    company="Tech Solutions", location="Bengaluru", salary="10-15 LPA", experience="2-4 Years",  description="React, Next.js, Tailwind CSS, TypeScript"),
     JobListing(id=2, title="Backend Developer",     company="InnovateX",     location="Mumbai",    salary="12-18 LPA", experience="3-5 Years",  description="Python, FastAPI, PostgreSQL, REST APIs"),

@@ -71,7 +71,7 @@ def resume_optimizer_tool(role: str) -> Dict[str, Any]:
         "action_verbs": ["Architected", "Engineered", "Optimized", "Spearheaded", "Deployed"]
     }
 
-# Week 4 Tool: Company Information Lookup (AmbitionBox & Glassdoor style)
+# Company Information Lookup (AmbitionBox & Glassdoor style)
 COMPANY_DATABASE = {
     "google": {
         "name": "Google India",

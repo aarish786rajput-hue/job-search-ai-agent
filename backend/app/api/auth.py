@@ -9,8 +9,11 @@ from typing import Optional
 
 from app.core.database import get_db
 from app.models.user import User
+from app.models.application import JobApplication
+from app.models.alert import JobAlert
+from app.models.interview import MockInterview, ScheduledInterview
 
-SECRET_KEY = "capabl-job-search-ai-secret-2024"  # Move to .env in production
+SECRET_KEY = "careercraft-job-search-ai-secret-2025"  # Move to .env in production
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -169,3 +172,98 @@ def update_profile(
     db.commit()
     db.refresh(current_user)
     return current_user
+
+
+@router.get("/export-data")
+def export_user_data(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    GDPR & Indian DPDP Act 2023 Compliance — Data Portability.
+    Exports all personal candidate data, applications, alerts, and interview sessions.
+    """
+    apps = db.query(JobApplication).filter(JobApplication.user_id == current_user.id).all()
+    alerts = db.query(JobAlert).filter(JobAlert.user_id == current_user.id).all()
+    interviews = db.query(MockInterview).filter(MockInterview.user_id == current_user.id).all()
+    scheduled = db.query(ScheduledInterview).filter(ScheduledInterview.user_id == current_user.id).all()
+
+    return {
+        "export_date": datetime.now(timezone.utc).isoformat(),
+        "compliance_standard": "GDPR Article 20 / DPDP Act 2023",
+        "profile": {
+            "id": current_user.id,
+            "full_name": current_user.full_name,
+            "email": current_user.email,
+            "target_role": current_user.target_role,
+            "target_salary": current_user.target_salary,
+            "preferred_locations": current_user.preferred_locations,
+            "notice_period": current_user.notice_period,
+            "work_mode": current_user.work_mode,
+            "primary_skills": current_user.primary_skills,
+            "experience_years": current_user.experience_years
+        },
+        "job_applications": [
+            {
+                "job_title": a.job_title,
+                "company": a.company,
+                "location": a.location,
+                "salary": a.salary,
+                "status": a.status,
+                "created_at": a.created_at.isoformat() if a.created_at else None
+            }
+            for a in apps
+        ],
+        "job_alerts": [
+            {
+                "keyword": al.keyword,
+                "location": al.location,
+                "min_salary": al.min_salary,
+                "work_mode": al.work_mode,
+                "channel": al.channel,
+                "is_active": al.is_active
+            }
+            for al in alerts
+        ],
+        "mock_interviews": [
+            {
+                "role": iv.role,
+                "difficulty": iv.difficulty,
+                "total_score": iv.total_score,
+                "feedback_summary": iv.feedback_summary,
+                "created_at": iv.created_at.isoformat() if iv.created_at else None
+            }
+            for iv in interviews
+        ],
+        "scheduled_interviews": [
+            {
+                "role": sc.role,
+                "scheduled_for": sc.scheduled_for.isoformat() if sc.scheduled_for else None,
+                "reminder_channel": sc.reminder_channel
+            }
+            for sc in scheduled
+        ]
+    }
+
+
+@router.delete("/delete-account")
+def delete_user_account(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    GDPR Article 17 — Right to Erasure ('Right to be Forgotten').
+    Permanently purges the candidate's account and all associated applications, alerts, and interview records.
+    """
+    # Delete cascade
+    db.query(JobApplication).filter(JobApplication.user_id == current_user.id).delete()
+    db.query(JobAlert).filter(JobAlert.user_id == current_user.id).delete()
+    db.query(MockInterview).filter(MockInterview.user_id == current_user.id).delete()
+    db.query(ScheduledInterview).filter(ScheduledInterview.user_id == current_user.id).delete()
+    db.query(User).filter(User.id == current_user.id).delete()
+    db.commit()
+
+    return {
+        "status": "success",
+        "message": "Your candidate account and all associated data have been permanently erased in compliance with GDPR / DPDP Act."
+    }

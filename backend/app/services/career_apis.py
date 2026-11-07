@@ -481,3 +481,4 @@ def generate_tailored_resume_and_linkedin(
         "tailored_bullet_points": tailored_bullet_points,
         "recommended_action": "Incorporate these tailored bullet points into your latest project experience section before applying."
     }
+

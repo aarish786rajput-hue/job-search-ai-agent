@@ -3,8 +3,8 @@ import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Capabl — AI Job Search Assistant",
-  description: "AI-powered career assistant to find jobs, build resumes, and prepare for interviews.",
+  title: "CareerCraft — AI Job Search & Career Intelligence",
+  description: "AI-powered career platform to find jobs, optimize resumes for ATS, and prepare for interviews.",
 };
 
 export default function RootLayout({

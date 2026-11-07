@@ -8,28 +8,28 @@ ROLE_BENCHMARK_SKILLS: Dict[str, Dict[str, Any]] = {
     "ai engineer": {
         "required_skills": ["Python", "LangChain", "LangGraph", "Vector Databases", "Embeddings", "RAG Pipelines", "Docker", "FastAPI"],
         "roadmap": [
-            {"week": "Week 1: Foundations & Architecture", "focus": "Cyclic state graphs with LangGraph, state schemas, and conditional edges.", "project": "Build a stateful conversational assistant with memory."},
-            {"week": "Week 2: Advanced Retrieval & RAG", "focus": "Hybrid search (BM25 + Chroma/Pinecone), cross-encoder re-ranking, and chunking strategies.", "project": "PDF document Q&A engine with citation grounding."},
-            {"week": "Week 3: Tool Use & Agentic Workflows", "focus": "Function calling, dynamic tool dispatch, and human-in-the-loop validation.", "project": "Multi-tool research agent with web search & calculation."},
-            {"week": "Week 4: Evaluation & Productionization", "focus": "RAGAS framework, latency optimization with Redis caching, and Docker deployment.", "project": "Production-ready API service with latency benchmarks."}
+            {"week": "Phase 1: Foundations & Architecture", "focus": "Cyclic state graphs with LangGraph, state schemas, and conditional edges.", "project": "Build a stateful conversational assistant with memory."},
+            {"week": "Phase 2: Advanced Retrieval & RAG", "focus": "Hybrid search (BM25 + Chroma/Pinecone), cross-encoder re-ranking, and chunking strategies.", "project": "PDF document Q&A engine with citation grounding."},
+            {"week": "Phase 3: Tool Use & Agentic Workflows", "focus": "Function calling, dynamic tool dispatch, and human-in-the-loop validation.", "project": "Multi-tool research agent with web search & calculation."},
+            {"week": "Phase 4: Evaluation & Productionization", "focus": "RAGAS framework, latency optimization with Redis caching, and Docker deployment.", "project": "Production-ready API service with latency benchmarks."}
         ]
     },
     "full stack developer": {
         "required_skills": ["React", "Next.js", "TypeScript", "Tailwind CSS", "FastAPI", "SQLAlchemy", "PostgreSQL", "Docker", "CI/CD"],
         "roadmap": [
-            {"week": "Week 1: Modern Frontend Architecture", "focus": "Next.js App Router, React Server Components (RSC), and state management.", "project": "High-performance job portal dashboard with glassmorphism UI."},
-            {"week": "Week 2: Resilient RESTful APIs", "focus": "FastAPI asynchronous handlers, Pydantic v2 schemas, and JWT authentication.", "project": "Complete Auth & Profile microservice with PBKDF2 hashing."},
-            {"week": "Week 3: Database & Performance", "focus": "SQLAlchemy relationships, query indexing, and eliminating N+1 queries.", "project": "Optimized multi-tenant application tracking database."},
-            {"week": "Week 4: DevOps & Cloud Delivery", "focus": "Docker containerization, GitHub Actions CI/CD pipelines, and Vercel edge deployment.", "project": "Zero-downtime deployment pipeline with automated test suites."}
+            {"week": "Phase 1: Modern Frontend Architecture", "focus": "Next.js App Router, React Server Components (RSC), and state management.", "project": "High-performance job portal dashboard with glassmorphism UI."},
+            {"week": "Phase 2: Resilient RESTful APIs", "focus": "FastAPI asynchronous handlers, Pydantic v2 schemas, and JWT authentication.", "project": "Complete Auth & Profile microservice with PBKDF2 hashing."},
+            {"week": "Phase 3: Database & Performance", "focus": "SQLAlchemy relationships, query indexing, and eliminating N+1 queries.", "project": "Optimized multi-tenant application tracking database."},
+            {"week": "Phase 4: DevOps & Cloud Delivery", "focus": "Docker containerization, GitHub Actions CI/CD pipelines, and Vercel edge deployment.", "project": "Zero-downtime deployment pipeline with automated test suites."}
         ]
     },
     "backend developer": {
         "required_skills": ["Python", "FastAPI", "PostgreSQL", "Redis", "Celery", "Docker", "System Design", "Microservices"],
         "roadmap": [
-            {"week": "Week 1: High-Throughput APIs", "focus": "FastAPI async endpoints, dependency injection, and middleware telemetry.", "project": "Rate-limited API gateway with Bearer token authentication."},
-            {"week": "Week 2: Caching & Asynchronous Tasks", "focus": "Redis key-value caching and Celery task queues for long-running jobs.", "project": "Background email and notification dispatcher with worker queues."},
-            {"week": "Week 3: Distributed Database Patterns", "focus": "Database transactions, optimistic locking, connection pooling, and indexing.", "project": "High-concurrency booking engine handling race conditions."},
-            {"week": "Week 4: Scalable System Design", "focus": "Microservices decomposition, message queues, and load balancing principles.", "project": "End-to-end scalable backend architecture with documentation."}
+            {"week": "Phase 1: High-Throughput APIs", "focus": "FastAPI async endpoints, dependency injection, and middleware telemetry.", "project": "Rate-limited API gateway with Bearer token authentication."},
+            {"week": "Phase 2: Caching & Asynchronous Tasks", "focus": "Redis key-value caching and Celery task queues for long-running jobs.", "project": "Background email and notification dispatcher with worker queues."},
+            {"week": "Phase 3: Distributed Database Patterns", "focus": "Database transactions, optimistic locking, connection pooling, and indexing.", "project": "High-concurrency booking engine handling race conditions."},
+            {"week": "Phase 4: Scalable System Design", "focus": "Microservices decomposition, message queues, and load balancing principles.", "project": "End-to-end scalable backend architecture with documentation."}
         ]
     }
 }

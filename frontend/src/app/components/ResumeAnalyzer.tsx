@@ -112,7 +112,7 @@ export function ResumeAnalyzer({ onSkillsDetected }: ResumeAnalyzerProps) {
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-100/80 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 text-xs font-bold mb-2">
             <Sparkles className="w-3.5 h-3.5" />
-            AI Resume Analyzer & ATS Scorer (Week 3)
+            AI Resume Analyzer &amp; ATS Scorer
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
             Upload Your Resume for Instant AI Job Matching
@@ -239,13 +239,13 @@ export function ResumeAnalyzer({ onSkillsDetected }: ResumeAnalyzerProps) {
             </div>
           </div>
 
-          {/* Week 6 Option A2: Role-Tailored Resume & LinkedIn Pitch Engine */}
+          {/* Role-Tailored Resume & LinkedIn Pitch Engine */}
           <div className="bg-gradient-to-br from-indigo-50/50 to-white dark:from-slate-800/90 dark:to-slate-900 border border-indigo-100 dark:border-indigo-900/40 rounded-2xl p-5 shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                   <FileText className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                  Tailor Resume &amp; LinkedIn Profile (Week 6 AI Engine)
+                  Tailor Resume &amp; LinkedIn Profile (AI Optimization Engine)
                 </h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Generate company-targeted bullet points and LinkedIn bio aligned to your target vacancy.

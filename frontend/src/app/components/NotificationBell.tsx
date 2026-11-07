@@ -101,7 +101,7 @@ export function NotificationBell() {
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm text-slate-900 dark:text-white">Job Alert Notifications</span>
               <span className="text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-semibold px-2 py-0.5 rounded-full">
-                Week 4
+                Live
               </span>
             </div>
             {notifications.length > 0 && (

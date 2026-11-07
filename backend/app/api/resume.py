@@ -111,7 +111,7 @@ class TailorResumeRequest(BaseModel):
 @router.post("/tailor")
 def tailor_resume(req: TailorResumeRequest):
     """
-    Week 6: Generate tailored resume bullets and LinkedIn profile optimizations
+    Generate tailored resume bullets and LinkedIn profile optimizations
     tailored specifically for a job application.
     """
     from app.services.career_apis import generate_tailored_resume_and_linkedin
