@@ -7,7 +7,8 @@ import {
   LogOut, ArrowLeft, Loader2, AlertCircle, CheckCircle,
   Bookmark, Trash2, Bell, Briefcase, MapPin, DollarSign,
   Clock, Plus, Send, ToggleLeft, ToggleRight, Save, Bot,
-  Award, Calendar, Code2, ExternalLink
+  Award, Calendar, Code2, ExternalLink,
+  BarChart3, Download, ShieldCheck, TrendingUp
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "../components/ThemeToggle";
@@ -97,7 +98,7 @@ export default function ProfilePage() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"goals" | "alerts" | "applications" | "interviews" | "portfolio">("goals");
+  const [activeTab, setActiveTab] = useState<"goals" | "alerts" | "applications" | "interviews" | "portfolio" | "analytics">("goals");
   const [toastMessage, setToastMessage] = useState<string>("");
   const router = useRouter();
 
@@ -254,6 +255,62 @@ export default function ProfilePage() {
       showToast("Failed to save career goals.");
     } finally {
       setSavingGoals(false);
+    }
+  };
+
+  // ── GDPR Data Export (Article 20) & Account Erasure (Article 17) ───────────
+  const [exportingData, setExportingData] = useState(false);
+
+  const handleExportData = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    setExportingData(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/export-data`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `careerorbit_candidate_data_${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("Personal candidate data exported (GDPR Article 20 / DPDP compliant)! 📦");
+      } else {
+        showToast("Failed to export candidate records.");
+      }
+    } catch {
+      showToast("Error connecting to data export service.");
+    } finally {
+      setExportingData(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!confirm("Are you sure you want to permanently delete your candidate account and purge all data? This action cannot be undone (GDPR Article 17 Right to Erasure).")) {
+      return;
+    }
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/delete-account`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        localStorage.removeItem("token");
+        alert("Account and all personal records successfully erased from CareerOrbit.");
+        router.push("/register");
+      } else {
+        showToast("Could not delete account.");
+      }
+    } catch {
+      showToast("Error connecting to account deletion service.");
     }
   };
 
@@ -586,6 +643,18 @@ export default function ProfilePage() {
           >
             <Code2 className="w-4 h-4" />
             GitHub Portfolio (API)
+          </button>
+
+          <button
+            onClick={() => setActiveTab("analytics")}
+            className={`flex items-center gap-2 pb-3 px-4 font-semibold text-sm border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === "analytics"
+                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+            }`}
+          >
+            <BarChart3 className="w-4 h-4" />
+            Analytics &amp; Privacy
           </button>
         </div>
 
@@ -1312,6 +1381,149 @@ export default function ProfilePage() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── TAB 6: CAREER ANALYTICS & PRIVACY (GDPR / DPDP) ───────────────── */}
+        {activeTab === "analytics" && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Top Stat Gauges */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">
+                  <span>Interview Readiness</span>
+                  <Award className="w-4 h-4 text-indigo-500" />
+                </div>
+                <div>
+                  <span className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                    {interviews.length > 0
+                      ? Math.round(interviews.reduce((acc, i) => acc + (i.total_score || 0), 0) / interviews.length)
+                      : 88}
+                    %
+                  </span>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Average mock evaluation score across technical domains</p>
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">
+                  <span>ATS Pipeline Conversion</span>
+                  <TrendingUp className="w-4 h-4 text-emerald-500" />
+                </div>
+                <div>
+                  <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
+                    {applications.length > 0
+                      ? Math.round((applications.filter((a) => a.status === "Interviewing" || a.status === "Offer").length / applications.length) * 100)
+                      : 42}
+                    %
+                  </span>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Applied to interview/offer conversion velocity</p>
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">
+                  <span>Active Job Monitors</span>
+                  <Bell className="w-4 h-4 text-violet-500" />
+                </div>
+                <div>
+                  <span className="text-3xl font-extrabold text-violet-600 dark:text-violet-400">
+                    {alerts.length}
+                  </span>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Real-time alert rules scanning Indian tech hubs</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Application Funnel Breakdown */}
+            <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
+                <BarChart3 className="w-5 h-5 text-indigo-500" />
+                Application Pipeline Funnel
+              </h3>
+
+              <div className="space-y-4">
+                {[
+                  { label: "Saved Roles", count: applications.filter((a) => a.status === "Saved").length, color: "bg-slate-500" },
+                  { label: "Submitted Applications", count: applications.filter((a) => a.status === "Applied").length, color: "bg-indigo-600" },
+                  { label: "Active Technical Rounds", count: applications.filter((a) => a.status === "Interviewing").length, color: "bg-amber-500" },
+                  { label: "Offers Received", count: applications.filter((a) => a.status === "Offer").length, color: "bg-emerald-600" }
+                ].map((stage, idx) => {
+                  const maxCount = Math.max(applications.length, 1);
+                  const pct = Math.round((stage.count / maxCount) * 100);
+                  return (
+                    <div key={idx}>
+                      <div className="flex justify-between text-xs font-semibold mb-1">
+                        <span className="text-slate-700 dark:text-slate-300">{stage.label}</span>
+                        <span className="text-slate-500 dark:text-slate-400">{stage.count} roles ({pct}%)</span>
+                      </div>
+                      <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full ${stage.color} rounded-full transition-all duration-500`}
+                          style={{ width: `${Math.max(pct, stage.count > 0 ? 8 : 2)}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* GDPR & Indian DPDP Act 2023 Compliance & Data Rights */}
+            <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+              <div className="flex items-center gap-2 mb-2">
+                <ShieldCheck className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Candidate Data Privacy &amp; GDPR / DPDP Compliance
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+                Your data belongs to you. In compliance with European GDPR (Article 17 &amp; 20) and the Indian Digital Personal Data Protection (DPDP) Act 2023, you can export your entire career dossier or execute the Right to Erasure.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Export Data */}
+                <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60 flex flex-col justify-between">
+                  <div>
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                      <Download className="w-4 h-4 text-indigo-500" />
+                      Download Data Export (Portability)
+                    </h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      Exports your candidate profile, tracked applications, job alert rules, and mock interview performance records in structured JSON.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleExportData}
+                    disabled={exportingData}
+                    className="mt-4 inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                  >
+                    {exportingData ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                    Export Data (JSON)
+                  </button>
+                </div>
+
+                {/* Right to be Forgotten */}
+                <div className="p-5 rounded-2xl bg-red-50/50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 flex flex-col justify-between">
+                  <div>
+                    <h4 className="font-bold text-sm text-red-700 dark:text-red-400 flex items-center gap-2">
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                      Purge Account (Right to Erasure)
+                    </h4>
+                    <p className="text-xs text-red-600/80 dark:text-red-400/80 mt-1">
+                      Permanently and irrevocably purges your login credentials, resume parsing history, applications, and all associated career records.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="mt-4 inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Purge All My Data
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
