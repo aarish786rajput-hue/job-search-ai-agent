@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Bell, Mail, MessageSquare, Trash2 } from "lucide-react";
+import { Bell, Mail, MessageSquare, Trash2, Loader2 } from "lucide-react";
 import { API_BASE } from "../lib/api";
 
 interface NotificationItem {
@@ -100,6 +100,7 @@ export function NotificationBell() {
           <div className="flex items-center justify-between px-4 pb-2.5 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm text-slate-900 dark:text-white">Job Alert Notifications</span>
+              {loading && <Loader2 className="w-3 h-3 animate-spin text-indigo-500" />}
               <span className="text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-semibold px-2 py-0.5 rounded-full">
                 Live
               </span>

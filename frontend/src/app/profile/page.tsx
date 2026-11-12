@@ -98,7 +98,19 @@ export default function ProfilePage() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"goals" | "alerts" | "applications" | "interviews" | "portfolio" | "analytics">("goals");
+  const [activeTab, setActiveTab] = useState<"goals" | "alerts" | "applications" | "interviews" | "portfolio" | "analytics">(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab");
+      if (
+        tabParam &&
+        ["goals", "alerts", "applications", "interviews", "portfolio", "analytics"].includes(tabParam)
+      ) {
+        return tabParam as "goals" | "alerts" | "applications" | "interviews" | "portfolio" | "analytics";
+      }
+    }
+    return "goals";
+  });
   const [toastMessage, setToastMessage] = useState<string>("");
   const router = useRouter();
 
@@ -882,7 +894,7 @@ export default function ProfilePage() {
                   className="mb-8 p-6 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/60 dark:border-indigo-900/40 animate-in fade-in duration-200"
                 >
                   <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-4">Set Alert Criteria</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                         Job Title / Keyword
@@ -926,6 +938,22 @@ export default function ProfilePage() {
                         placeholder="e.g. 15 LPA"
                         className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                        Work Mode
+                      </label>
+                      <select
+                        value={newWorkMode}
+                        onChange={(e) => setNewWorkMode(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                      >
+                        <option value="Any">Any (In-Office / Hybrid / Remote)</option>
+                        <option value="Remote">100% Remote</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Onsite">Onsite / In-Office</option>
+                      </select>
                     </div>
 
                     <div>
@@ -1285,6 +1313,7 @@ export default function ProfilePage() {
                 {/* Profile Overview Card */}
                 <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-indigo-50/30 dark:from-slate-800/50 dark:to-indigo-950/20 border border-slate-200/80 dark:border-slate-700/70 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={githubData.avatar_url}
                       alt={githubData.username}

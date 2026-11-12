@@ -16,6 +16,7 @@ import {
   Bookmark,
   CheckCircle,
   Bot,
+  BarChart3,
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "./components/ThemeToggle";
@@ -160,9 +161,15 @@ export default function Home() {
           <div className="flex items-center gap-2.5">
             <Link
               href="/interview"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/60 hover:bg-indigo-100 transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors"
             >
               <Bot className="w-3.5 h-3.5" /> Mock Interview &amp; Career AI
+            </Link>
+            <Link
+              href="/profile?tab=analytics"
+              className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl bg-violet-50 dark:bg-violet-950/70 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800/60 hover:bg-violet-100 dark:hover:bg-violet-900/40 transition-colors"
+            >
+              <BarChart3 className="w-3.5 h-3.5" /> Analytics &amp; Privacy
             </Link>
             <NotificationBell />
             <ThemeToggle />

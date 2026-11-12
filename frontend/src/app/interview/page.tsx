@@ -585,7 +585,7 @@ export default function InterviewCareerPage() {
               </p>
             </div>
 
-            <form onSubmit={handleCalculateNegotiation} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <form onSubmit={handleCalculateNegotiation} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Company Name</label>
                 <input
@@ -632,7 +632,21 @@ export default function InterviewCareerPage() {
                 />
               </div>
 
-              <div className="sm:col-span-2 lg:col-span-4 flex justify-end">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Notice Period</label>
+                <select
+                  value={noticePeriod}
+                  onChange={(e) => setNoticePeriod(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+                >
+                  <option value="15">15 days</option>
+                  <option value="30">30 days</option>
+                  <option value="60">60 days</option>
+                  <option value="90">90 days</option>
+                </select>
+              </div>
+
+              <div className="sm:col-span-2 lg:col-span-5 flex justify-end">
                 <button
                   type="submit"
                   disabled={negotiating}
